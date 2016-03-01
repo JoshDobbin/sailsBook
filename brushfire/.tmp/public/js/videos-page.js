@@ -23,5 +23,32 @@ angular.module('brushfire_videosPage').controller('PageCtrl', [ //#B
             $scope.videosLoading = false; //#E
             $scope.videos = _videos; //#F
         }, 750); //#G
+
+        $scope.submitNewVideo = function() {
+            //#A
+            if ($scope.busySubmittingVideo) {
+                return;
+            }
+            var _newVideo = {
+                title: $scope.newVideoTitle,
+                src: $scope.newVideoSrc,
+            };
+            //#B
+            var parser = document.createElement('a');
+            //#C
+            parser.href = _newVideo.src
+            var youtubeID = parser.search.substring(parser.search.indexOf("=") + 1,
+                parser.search.length);
+            _newVideo.src = 'https://www.youtube.com/embed/' + youtubeID;
+            $scope.busySubmittingVideo = true;
+            //#D
+            $timeout(function() {
+                $scope.videos.unshift(_newVideo);
+                //#E
+                $scope.busySubmittingVideo = false;
+                $scope.newVideoTitle = '';
+                $scope.newVideoSrc = '';
+            }, 750);
+        };
     }
 ]);
